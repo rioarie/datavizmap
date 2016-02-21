@@ -45,7 +45,7 @@
     
 	var center = cesiumWidget.entities.add({
 	    name : 'Red box with black outline',
-	    position: Cesium.Cartesian3.fromDegrees( 118.663352,-1.116737,300000.0),
+	    position: Cesium.Cartesian3.fromDegrees( 112.654457,-7.941044,300000.0),
 	    box : {
 	        dimensions : new Cesium.Cartesian3(400000.0, 300000.0, 500000),
 	        material : Cesium.Color.RED.withAlpha(0)
@@ -53,7 +53,7 @@
 	});
 	
 	cesiumWidget.flyTo(center, {
-        offset : new Cesium.HeadingPitchRange(Math.PI / 2, -Math.PI / 4, 4500000)
+        offset : new Cesium.HeadingPitchRange(0, (-Math.PI / 2)+0.0000001, 45000)
     });
         
     var handler = new Cesium.ScreenSpaceEventHandler(cesiumWidget.scene.canvas);
