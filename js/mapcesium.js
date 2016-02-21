@@ -58,18 +58,36 @@
         
     var handler = new Cesium.ScreenSpaceEventHandler(cesiumWidget.scene.canvas);
 	handler.setInputAction(function(click) {
+		var cartesian = cesiumWidget.scene.pickPosition(click.position);
+            
+        if (Cesium.defined(cartesian)) {
+            var cartographic = Cesium.Cartographic.fromCartesian(cartesian);
+            var longitudeString = Cesium.Math.toDegrees(cartographic.longitude).toFixed(2);
+            var latitudeString = Cesium.Math.toDegrees(cartographic.latitude).toFixed(2);
+            var heightString = cartographic.height.toFixed(2);
+			console.log(longitudeString+":"+latitudeString);
+        }
+
 	    var pickedObject = cesiumWidget.scene.pick(click.position);
 	    
 	    if (Cesium.defined(pickedObject) && (pickedObject.id)) {
-	        console.log(pickedObject.id.polyline.positions.getValue(cesiumWidget.clock.currentTime));
-	        viewer.camera.flyTo({
-		        destination : Cesium.Cartesian3.fromDegreesArray(pickedObject.id.polyline.positions.getValue(cesiumWidget.clock.currentTime)),
-		        orientation : {
-		            heading : Cesium.Math.toRadians(20.0),
-		            pitch : Cesium.Math.toRadians(-35.0),
-		            roll : 0.0
-		        }
-		    });
+        	var entityId = pickedObject.id._id;
+			console.log(entityId);
+			getPCData(2,entityId);
+         //    var cartographic = Cesium.Cartographic.fromCartesian(pickedObject);
+         //    var longitudeString = Cesium.Math.toDegrees(cartographic.longitude).toFixed(2);
+         //    var latitudeString = Cesium.Math.toDegrees(cartographic.latitude).toFixed(2);
+         //    var heightString = cartographic.height.toFixed(2);
+	        
+	        // console.log(longitudeString+"|"+latitudeString);
+	     //    cesiumWidget.camera.flyTo({
+		    //     destination : Cesium.Cartesian3.fromDegreesArray(pickedObject.id.polyline.positions.getValue(cesiumWidget.clock.currentTime)),
+		    //     orientation : {
+		    //         heading : Cesium.Math.toRadians(20.0),
+		    //         pitch : Cesium.Math.toRadians(-35.0),
+		    //         roll : 0.0
+		    //     }
+		    // });
 	    }
 	}, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 	

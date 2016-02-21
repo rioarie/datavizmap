@@ -10,7 +10,7 @@
         this._entityCollection = new Cesium.EntityCollection();
         this._seriesNames = [];
         this._seriesToDisplay = undefined;
-        this._heightScale = 5000;
+        this._heightScale = 100;
     };
 
 
@@ -91,10 +91,13 @@
             throw new Cesium.DeveloperError("url must be defined.");
         }
 
+        showloadingscreen();
+
         var that = this;
         return Cesium.when(Cesium.loadJson(url), function(json) {
             return that.load(json);
         }).otherwise(function(error) {
+            hideloadingscreen();
             this._setLoading(false);
             that._error.raiseEvent(that, error);
             return Cesium.when.reject(error);
@@ -104,7 +107,7 @@
         if (!Cesium.defined(data)) 
             throw new Cesium.DeveloperError("data must be defined.");
 
-
+        setd3data(data);
         //Clear out any data that might already exist.
         this._setLoading(true);
         this._seriesNames.length = 0;
@@ -147,7 +150,7 @@
                 polyline.positions = new Cesium.ConstantProperty([surfacePosition, heightPosition]);
     
                 var entity = new Cesium.Entity({
-                    id : seriesName + ' index ' + i.toString(),
+                    id : node.id,
                     show : true,
                     polyline : polyline,
                     seriesName : seriesName 
@@ -161,6 +164,7 @@
         entities.resumeEvents();
         this._changed.raiseEvent(this);
         this._setLoading(false);
+        hideloadingscreen();
     }
     
     var getBarColor = function(kwh,alpha){
@@ -181,11 +185,18 @@
     };
 
 
+    function showloadingscreen(){
+        $('#loadingOverlay').show();
+    }
+    function hideloadingscreen(){
+        $('#loadingOverlay').hide();
+    }
+
     var _uh = new processDataJson();
 
     //http://159.8.109.244:4040/power-api/all/thn/bln
     //http://159.8.109.244:4040/power-api/detail/thn/bln/id
-    function getPCData(tipe){
+    function getPCData(tipe,entityId){
         var selectedtime  = $('#selectedtime option:selected').val().split("|");
 
         var url = "";
@@ -194,7 +205,7 @@
                 url = "http://159.8.109.244:4040/power-api/all/"+selectedtime[0]+"/"+selectedtime[1];
                 break;
             case 2: //detaildata
-                url = "http://159.8.109.244:4040/power-api/detail/"+selectedtime[0]+"/"+selectedtime[1];
+                url = "http://159.8.109.244:4040/power-api/detail/"+selectedtime[0]+"/"+selectedtime[1]+"/"+entityId;
                 break;
         }
 

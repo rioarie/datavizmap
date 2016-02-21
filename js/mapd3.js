@@ -1,5 +1,4 @@
 /*global d3, sharedObject */
-(function () {
     "use strict";
 
     var margin ={top:20, right:30, bottom:30, left:40},
@@ -47,8 +46,8 @@
                   .orient("left");
 
     //http://codepen.io/superpikar/pen/kcJDf.js
-    d3.json("http://159.8.109.244:4040/power-api/all/2015/12", function(error, data){
-
+    //d3.json("http://159.8.109.244:4040/power-api/all/2015/12", function(error, data){
+    function setd3data(data){
       x.domain(data.map(function(d){ return d.id}));
       y.domain([0, d3.max(data, function(d){return d.kwh_lwbp})]);
       
@@ -95,7 +94,7 @@
             .attr("dy", ".71em")
             .style("text-anchor", "end")
             .text("Frequency");
-    });
+    };
 
     function type(d) {
         d.id = +d.id; // coerce to number
@@ -106,4 +105,3 @@
     //   svg.select(".x.axis").call(xAxis);
     //   svg.select(".y.axis").call(yAxis);
     // }
-}());
