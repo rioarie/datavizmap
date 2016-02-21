@@ -56,6 +56,22 @@
         offset : new Cesium.HeadingPitchRange(Math.PI / 2, -Math.PI / 4, 4500000)
     });
         
+    var handler = new Cesium.ScreenSpaceEventHandler(cesiumWidget.scene.canvas);
+	handler.setInputAction(function(click) {
+	    var pickedObject = cesiumWidget.scene.pick(click.position);
+	    
+	    if (Cesium.defined(pickedObject) && (pickedObject.id)) {
+	        console.log(pickedObject.id.polyline.positions.getValue(cesiumWidget.clock.currentTime));
+	        viewer.camera.flyTo({
+		        destination : Cesium.Cartesian3.fromDegreesArray(pickedObject.id.polyline.positions.getValue(cesiumWidget.clock.currentTime)),
+		        orientation : {
+		            heading : Cesium.Math.toRadians(20.0),
+		            pitch : Cesium.Math.toRadians(-35.0),
+		            roll : 0.0
+		        }
+		    });
+	    }
+	}, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 	
     cesiumWidget.dataSources.add(_uh);
     

@@ -123,13 +123,13 @@
         
         this._seriesToDisplay = seriesName;
         
-        console.log("data length "+length);
+        console.log("data length "+length+"|"+seriesName);
         for(var i = 0 ; i < length ; i++) {
             try {
                 var node = data[i];
-                var height = node.Kwh_lwbp;
-                var lat = node.Gps_L;
-                var lon = node.Gps_B;
+                var height = node.kwh_lwbp;
+                var lat = node.gps_l;
+                var lon = node.gps_b;
                 
                 if(height <= 0) {
                     continue;
@@ -154,6 +154,7 @@
                 });
     
                 entities.add(entity);
+                console.log("add entity-"+i);
             }catch(err){console.log(err);}
         }
 
@@ -178,19 +179,29 @@
             this._loading.raiseEvent(this, isLoading);
         }
     };
+
+
     var _uh = new processDataJson();
-    _uh.loadUrl("http://159.8.109.244:4040/power-api/all").then(function() {
-        function createSeriesSetter(seriesName) {
-            return function() {
-                _uh.seriesToDisplay = seriesName;
-            };
+
+    //http://159.8.109.244:4040/power-api/all/thn/bln
+    //http://159.8.109.244:4040/power-api/detail/thn/bln/id
+    function getPCData(tipe){
+        var selectedtime  = $('#selectedtime option:selected').val().split("|");
+
+        var url = "";
+        switch(tipe){
+            case 1 : //alldata
+                url = "http://159.8.109.244:4040/power-api/all/"+selectedtime[0]+"/"+selectedtime[1];
+                break;
+            case 2: //detaildata
+                url = "http://159.8.109.244:4040/power-api/detail/"+selectedtime[0]+"/"+selectedtime[1];
+                break;
         }
 
-        for (var i = 0; i < _uh.seriesNames.length; i++) {
-            var seriesName = _uh.seriesNames[i];
-            Sandcastle.addToolbarButton(seriesName, createSeriesSetter(seriesName));
-        }
-    });
+        // _uh = new processDataJson();
+        console.log(url);
+        _uh.loadUrl(url);
+    }
 
 
     

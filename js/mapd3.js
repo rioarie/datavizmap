@@ -1,60 +1,109 @@
-(function(){
+/*global d3, sharedObject */
+(function () {
     "use strict";
-    
-    var margin = {top: 19.5, right: 19.5, bottom: 19.5, left: 39.5},
-        width = 960 - margin.right,
-        height = 500 - margin.top - margin.bottom;
 
-    // Various scales. These domains make assumptions of data, naturally.
-    var xScale = d3.scale.log().domain([300, 1e5]).range([0, width]),
-        yScale = d3.scale.linear().domain([10, 85]).range([height, 0]),
-        radiusScale = d3.scale.sqrt().domain([0, 5e8]).range([0, 40]),
-        colorScale = d3.scale.category20c();
+    var margin ={top:20, right:30, bottom:30, left:40},
+    width=450-margin.left - margin.right, 
+    height=250-margin.top-margin.bottom;
 
-    // The x & y axes.
-    var xAxis = d3.svg.axis().orient("bottom").scale(xScale).ticks(12, d3.format(",d")),
-        yAxis = d3.svg.axis().scale(yScale).orient("left");
 
-    // Create the SVG container and set the origin.
-    var svg = d3.select("#chart").append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    // Add the x-axis.
-    svg.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + height + ")")
-        .call(xAxis);
+    // var xAxis = d3.svg.axis()
+    //     .scale(x)
+    //     .orient("bottom")
+    //     .tickSize(-height);
 
-    // Add the y-axis.
-    svg.append("g")
-        .attr("class", "y axis")
-        .call(yAxis);
+    // var yAxis = d3.svg.axis()
+    //     .scale(y)
+    //     .orient("left")
+    //     .ticks(5)
+    //     .tickSize(-width);
 
-    // Add an x-axis label.
-    svg.append("text")
-        .attr("class", "x label")
-        .attr("text-anchor", "end")
-        .attr("x", width)
-        .attr("y", height - 6)
-        .text("income per capita, inflation-adjusted (dollars)");
+    // scale to ordinal because x axis is not numerical
+    var x = d3.scale.ordinal().rangeRoundBands([0, width-margin.left], .1);
 
-    // Add a y-axis label.
-    svg.append("text")
-        .attr("class", "y label")
-        .attr("text-anchor", "end")
-        .attr("y", 6)
-        .attr("dy", ".75em")
-        .attr("transform", "rotate(-90)")
-        .text("life expectancy (years)");
+    //scale to numerical value by height
+    var y = d3.scale.linear().range([height, 0]);
 
-    // Add the year label; the value is set on transition.
-    var label = svg.append("text")
-        .attr("class", "year label")
-        .attr("text-anchor", "start")
-        .attr("y", 28)
-        .attr("x", 30)
-        .text(1800);
-})();
+
+    // var zoom = d3.behavior.zoom()
+    // .x(x)
+    // .y(y)
+    // .scaleExtent([1, 32])
+    // .on("zoom", zoomed);
+
+
+    var chart = d3.select("#barchart")  
+                  .append("svg")  //append svg element inside #chart
+                  .attr("width", width+margin.right)//)    //set width
+                  .attr("height", height+margin.top); 
+
+    var xAxis = d3.svg.axis()
+                  .scale(x)
+                  .orient("bottom");  //orient bottom because x-axis will appear below the bars
+
+    var yAxis = d3.svg.axis()
+                  .scale(y)
+                  .orient("left");
+
+    //http://codepen.io/superpikar/pen/kcJDf.js
+    d3.json("http://159.8.109.244:4040/power-api/all/2015/12", function(error, data){
+
+      x.domain(data.map(function(d){ return d.id}));
+      y.domain([0, d3.max(data, function(d){return d.kwh_lwbp})]);
+      
+      var bar = chart.selectAll("g")
+                        .data(data)
+                      .enter()
+                        .append("g")
+                        .attr("transform", function(d, i){
+                          return "translate("+x(d.id)+", 0)";
+                        });
+
+
+      
+      bar.append("rect")
+          .attr("y", function(d) { 
+            return y(d.kwh_lwbp); 
+          })
+          .attr("x", function(d,i){
+            return x.rangeBand()+margin.left;
+          })
+          .attr("height", function(d) { 
+            return height - y(d.kwh_lwbp); 
+          })
+          .attr("width", x.rangeBand());  //set width base on range on ordinal data
+
+      // bar.append("text")
+      //     .attr("x", x.rangeBand()+margin.left )
+      //     .attr("y", function(d) { return y(d.frequency) -10; })
+      //     .attr("dy", ".75em")
+      //     .text(function(d) { return d.frequency; });
+      
+      chart.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate("+margin.left+","+ height+")")        
+            .call(xAxis);
+      
+      chart.append("g")
+            .attr("class", "y axis")
+            .attr("transform", "translate("+margin.left+",0)")
+            .call(yAxis)
+            .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 6)
+            .attr("dy", ".71em")
+            .style("text-anchor", "end")
+            .text("Frequency");
+    });
+
+    function type(d) {
+        d.id = +d.id; // coerce to number
+        return d;
+    }
+
+    // function zoomed() {
+    //   svg.select(".x.axis").call(xAxis);
+    //   svg.select(".y.axis").call(yAxis);
+    // }
+}());
