@@ -27,7 +27,7 @@
 	    imageryProviderViewModels: imageryViewModels,
 	    timeline: false,
 	    animation: false, 
-	    navigationHelpButton:false,
+	    // navigationHelpButton:true,
 	    sceneModePicker:false,
 	    homeButton:false,
 	    terrainProvider: new Cesium.CesiumTerrainProvider({

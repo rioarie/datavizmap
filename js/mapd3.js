@@ -95,11 +95,11 @@
             .style("text-anchor", "end")
             .text("Frequency");
     };
-
+ 
     function type(d) {
         d.id = +d.id; // coerce to number
         return d;
-    }
+    } 
 
     // function zoomed() {
     //   svg.select(".x.axis").call(xAxis);
