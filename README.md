@@ -1,5 +1,5 @@
 # Datavizmap
-Data visualization of power consumption in Indonesia  using Cesium, mapbox, D3.js. This project is for [*Koding Hackanthon*](https://www.koding.com/Hackathon) purpose. 
+Data visualization of power consumption in Indonesia  using Cesium, mapbox, D3.js. This project is for [*Koding Hackathon*](https://www.koding.com/Hackathon) purpose. 
 
 ## Requirements
 - [Cesium](https://cesiumjs.org/) WebGL Virtual Globe and Map Engine
