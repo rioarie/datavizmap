@@ -4,8 +4,8 @@
     
 
     var margin ={top:20, right:30, bottom:30, left:40},
-    width=450-margin.left - margin.right, 
-    height=250-margin.top-margin.bottom;
+    width = 450-margin.left - margin.right,
+    height = 250-margin.top-margin.bottom;
 
 
     // scale to ordinal because x axis is not numerical
@@ -112,7 +112,8 @@
             width=450-margin.left - margin.right, 
             height=250-margin.top-margin.bottom;
         }
-        
+
+
         countresize = countresize + 1;  
 
 
