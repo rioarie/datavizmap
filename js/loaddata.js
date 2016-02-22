@@ -107,7 +107,6 @@
         if (!Cesium.defined(data)) 
             throw new Cesium.DeveloperError("data must be defined.");
 
-        setd3data(data);
         //Clear out any data that might already exist.
         this._setLoading(true);
         this._seriesNames.length = 0;
@@ -212,7 +211,12 @@
         // _uh = new processDataJson();
         console.log(url);
         _uh.loadUrl(url);
+        loadd3(url);
     }
+
+
+
+
 
 
     

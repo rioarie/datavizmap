@@ -52,8 +52,40 @@
 	    }
 	});
 	
+	// var camera = scene.camera;
+ //    camera.flyTo({
+ //        destination : Cesium.Cartesian3.fromDegrees(112.654457,-7.941044,300000.0),
+ //        orientation : {
+ //                        heading : Cesium.Math.toRadians(200.0),
+ //                        pitch : Cesium.Math.toRadians(-50.0)
+ //                    },
+ //        easingFunction : Cesium.EasingFunction.LINEAR_NONE,
+ //        complete : function() {
+ //            // setTimeout(function() {
+ //            //     camera.flyTo({
+ //            //         destination : Cesium.Cartesian3.fromDegrees(-73.98585975679403, 40.75759944127251, 186.50838555841779),
+ //            //         orientation : {
+ //            //             heading : Cesium.Math.toRadians(200.0),
+ //            //             pitch : Cesium.Math.toRadians(-50.0)
+ //            //         },
+ //            //         easingFunction : Cesium.EasingFunction.LINEAR_NONE
+ //            //     });
+ //            // }, 3000);
+ //        }
+ //    });
 	cesiumWidget.flyTo(center, {
-        offset : new Cesium.HeadingPitchRange(0, (-Math.PI / 2)+0.0000001, 45000)
+        offset : new Cesium.HeadingPitchRange(0, (-Math.PI / 2)+0.0000001, 45000),
+        complete: function(){
+		    var camera = cesiumWidget.camera;
+		    camera.setView({
+		        position : Cesium.Cartesian3.fromDegrees(112.654457,-7.941044,300000.0),
+		        orientation: {
+		            heading : -Cesium.Math.PI_OVER_TWO,
+		            pitch : -Cesium.Math.PI_OVER_FOUR,
+		            roll : 0.0
+		        }
+		    });
+        }
     });
         
     var handler = new Cesium.ScreenSpaceEventHandler(cesiumWidget.scene.canvas);
